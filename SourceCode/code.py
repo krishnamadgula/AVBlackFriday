@@ -3,10 +3,12 @@ import numpy as np
 import re
 from sklearn.ensemble import AdaBoostRegressor
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.linear_model import LinearRegression,LogisticRegression
 from sklearn.cross_validation import train_test_split
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import Normalizer
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error,r2_score
+import matplotlib.pyplot as plt
 def encode_onehot(df, cols):
     """
 
@@ -90,12 +92,23 @@ print len(list_y)
 #             list_x.remove(list_x[i])
 #             list_y.remove(list_y[i])
 print len(list_x),len(list_y)
+normalizer=Normalizer()
+list_x=normalizer.fit_transform(list_x)
+
 X_Train,X_Test,Y_Train,Y_Test=train_test_split(list_x,list_y,test_size=0.3)
-regr=AdaBoostRegressor(DecisionTreeRegressor(),n_estimators=100)
+# regr=AdaBoostRegressor(DecisionTreeRegressor(),n_estimators=100)
+regr=LinearRegression()
+# regr=LogisticRegression()
 regr.fit(X_Train,Y_Train)
 Y_Pred=[]
 Y_Pred=regr.predict(X_Test)
-print mean_squared_error(Y_Test,Y_Pred)
+plt.plot([i for i in range(1,1001)],Y_Pred[0:1000],'b^',[i for i in range(1,1001)],Y_Test[0:1000],'rs')
+plt.show()
+
+
+# for i in range(len(Y_Pred)):
+#     print Y_Pred[i],'-----',Y_Test[i]
+print np.sqrt(mean_squared_error(Y_Test,Y_Pred))
 
 x=dict()
 # for i in len(train.values)
