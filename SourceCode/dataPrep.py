@@ -1,7 +1,8 @@
+import pickle
 import pandas as pd
 import numpy as np
 import re
-from sklearn.ensemble import AdaBoostRegressor
+from sklearn.ensemble import AdaBoostRegressor,RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.linear_model import LinearRegression,LogisticRegression
 from sklearn.cross_validation import train_test_split
@@ -36,6 +37,7 @@ for i in ['Age','Gender','City_Category','Stay_In_Current_City_Years','Marital_S
     # oneHot.index=train.index
     train=train.drop(i,axis=1)
     train[oneHot.columns]=oneHot
+print train.columns
 # for i in train.values:
 #     print i
 #
@@ -55,11 +57,7 @@ print len(train.values)
 #         count=count+1
 # print count
 list_x=train.values
-for i in list_x:
-    for j in i:
-        if j==np.nan  or j==None:
-            print i
-print train.values
+
 columns=train.columns
 index=train.index
 for i in list_x:
@@ -94,59 +92,8 @@ print len(list_y)
 print len(list_x),len(list_y)
 normalizer=Normalizer()
 list_x=normalizer.fit_transform(list_x)
-
+file=open('C:\Users\Krishna\DataScienceCompetetions\AVBlackFriday\\trainFile','wb')
 X_Train,X_Test,Y_Train,Y_Test=train_test_split(list_x,list_y,test_size=0.3)
-# regr=AdaBoostRegressor(DecisionTreeRegressor(),n_estimators=100)
-regr=LinearRegression()
-# regr=LogisticRegression()
-regr.fit(X_Train,Y_Train)
-Y_Pred=[]
-Y_Pred=regr.predict(X_Test)
-plt.plot([i for i in range(1,1001)],Y_Pred[0:1000],'b^',[i for i in range(1,1001)],Y_Test[0:1000],'rs')
-plt.show()
 
-
-# for i in range(len(Y_Pred)):
-#     print Y_Pred[i],'-----',Y_Test[i]
-print np.sqrt(mean_squared_error(Y_Test,Y_Pred))
-
-x=dict()
-# for i in len(train.values)
-# x.update({'age':[],'gender':[],'occ':[],'city':[],'stay':[],'marital':[],'prodcat1':[],'prodcat2':[],'prodcat3':[]})
-#
-# # x['']
-# x['age']=list(train['Age'].values)
-# x['gender']=list(train['Gender'].values)
-# x['occ']=list(train['Occupation'].values)
-# x['city']=list(train['City_Category'].values)
-# x['stay']=list(train['Stay_In_Current_City_Years'].values)
-# x['marital']=list(train['Marital_Status'].values)
-# x['prodcat1']=list(train['Product_Category_1'].values)
-# x['prodcat2']=list(train['Product_Category_2'].values)
-# x['prodcat3']=list(train['Product_Category_3'].values)
-# # for i in range(len(x['gender'])):
-# #
-# #     if x['gender'][i]=='F':
-# #         x['gender'][i]=0
-# #     else:
-# #         x['gender'][i]=1
-# #
-# # for dummy in range(10):
-# #     print type(x['age'][dummy])
-# #
-# # for i in range(len(x['age'])):
-# #
-# #     if x['age'][i]=='F':
-# #         x['gender'][i]=0
-# #     else:
-# #         x['gender'][i]=1
-# # print x['gender']
-#
-#
-#
-#
-# # print len(x['age'])
-# x=train.values
-# # for i in x:
-# #     for j in i:
-# #         if j==nan:
+pickle.dump([X_Train,X_Test,Y_Train,Y_Test],file)
+file.close()
