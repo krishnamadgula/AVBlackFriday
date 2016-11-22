@@ -35,7 +35,7 @@ train.Age[train['Age']=='36-45']=41
 train.Age[train['Age']=='46-50']=48
 train.Age[train['Age']=='51-55']=53
 train.Age[train['Age']=='55+']=62
-train.Age[train['Age']==]=62
+train.Gender[train['Gender']]
 
 test.Age[test['Age']=='0-17']=17
 test.Age[test['Age']=='18-25']=22
@@ -44,12 +44,18 @@ test.Age[test['Age']=='36-45']=41
 test.Age[test['Age']=='46-50']=48
 test.Age[test['Age']=='51-55']=53
 test.Age[test['Age']=='55+']=62
+train.Product_Category_1[pd.isnull(train['Product_Category_1'])]=0
+test.Product_Category_1[pd.isnull(test['Product_Category_1'])]=0
+train.Product_Category_2[pd.isnull(train['Product_Category_2'])]=0
+test.Product_Category_2[pd.isnull(test['Product_Category_2'])]=0
+train.Product_Category_3[pd.isnull(train['Product_Category_3'])]=0
+test.Product_Category_3[pd.isnull(test['Product_Category_3'])]=0
 
 print train.values
 list_y=train['Purchase'].values
 train=train.drop('Purchase',axis=1)
 # train=encode_onehot(df=train,cols=['Age','Gender','City_Category','Stay_In_Current_City_Years','Marital_Status'])
-for i in ['Age','Gender','City_Category','Stay_In_Current_City_Years','Marital_Status','Product_Category_1','Product_Category_2','Product_Category_3']:
+for i in ['Gender','City_Category','Stay_In_Current_City_Years']:
     oneHot=pd.get_dummies(train[i] )
     oneHot1=pd.get_dummies(test[i])
     # oneHot.columns=train.columns

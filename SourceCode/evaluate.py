@@ -2,6 +2,7 @@ import pickle
 import pandas as pd
 import numpy as np
 import re
+from sklearn.linear_model import SGDRegressor
 from sklearn.ensemble import AdaBoostRegressor,RandomForestRegressor,GradientBoostingRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.linear_model import LinearRegression,LogisticRegression
@@ -10,6 +11,7 @@ from sklearn.feature_extraction import DictVectorizer
 from sklearn.preprocessing import Normalizer,PolynomialFeatures
 from sklearn.metrics import mean_squared_error,r2_score
 import matplotlib.pyplot as plt
+from sklearn.cross_validation import KFold,train_test_split
 
 file=open('C:\Users\Krishna\DataScienceCompetetions\AVBlackFriday\\trainFile','rb')
 X_Train,X_Valid,Y_Train,Y_valid,X_Test=pickle.load(file)
@@ -21,22 +23,33 @@ X_Train,X_Valid,Y_Train,Y_valid,X_Test=pickle.load(file)
 # polynomials.fit_transform(X_Test)
 X_Test=list(X_Test)
 test=pd.read_csv('C:\Users\Krishna\DataScienceCompetetions\AVBlackFriday\\test_HujdGe7\\test.csv')
-for i in range(len(X_Test)):
-    X_Test[i]=np.append(X_Test[i],[0,0])
+# for i in range(len(X_Test)):
+#     X_Test[i]=np.append(X_Test[i],[0,0])
 
 # print X_Test
-regr=RandomForestRegressor(n_jobs=-1,n_estimators=25)
-regr2=DecisionTreeRegressor(n_jobs=-1)
-regr.fit(X_Train,Y_Train)
-Y_Pred=regr.predict(X_Test)
+regr2=RandomForestRegressor(n_jobs=-1,n_estimators=20)
+regr3=LinearRegression(n_jobs=-1)
+# regr3=SGDRegressor()
+regr3.fit(X_Train,Y_Train)
+Y_Pred3=regr3.predict(X_Test)
+Y_valid_pred3=regr3.predict(X_Valid)
+
+# for train,test in train_test_split(X_Train,Y_Train)
+# regr.fit(X_Train,Y_Train)
+regr2.fit(X_Train,Y_Train)
+Y_valid_pred2=regr2.predict(X_Valid)
+print np.sqrt(mean_squared_error(Y_valid,Y_valid_pred2))
+# Y_Pred1=regr.predict(X_Test)
+Y_Pred2=regr2.predict(X_Test)
 # print regr.feature_importances_
 submission=pd.DataFrame()
 submission['User_ID']=test['User_ID']
-
-submission['Product_ID']=test['Product_ID']
-submission['Purchase']=Y_Pred
 print submission.describe
 print submission.values
+submission['Product_ID']=test['Product_ID']
+submission['Purchase']=Y_Pred2
+# submission['Purchase']=((Y_Pred1+Y_Pred2)/2)
+
 submission.to_csv('C:\Users\Krishna\DataScienceCompetetions\AVBlackFriday\submission.csv')
 
 # plt.plot([i for i in range(1,1001)],Y_Pred[0:1000],'b^',[i for i in range(1,1001)],Y_Test[0:1000],'rs')
